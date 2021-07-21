@@ -1,14 +1,27 @@
-# to authenticate users
-from flask import Blueprint, render_template
+# for user specific views
+from flask import Blueprint
+from flask import render_template, request, redirect, url_for
+from flask import g
+
+from . import db
+from . import auth
 
 bp = Blueprint("users", "users", url_prefix="/users")
 
-@bp.route("/signin")
-def signin():
-	
-	return render_template("signin.html")
-	
-@bp.route("/signup")
-def signup():
-	
-	return render_template("signup.html")
+@bp.route("/dashboard")
+@auth.login_required
+def dashboard():
+
+  return render_template("viewpoll.html")
+
+@bp.route("/profile")
+@auth.login_required
+def profile():
+  
+  return render_template("viewpoll.html")
+
+@bp.route("/mypolls")
+@auth.login_required
+def mypolls():
+  
+  return render_template("viewpoll/html")

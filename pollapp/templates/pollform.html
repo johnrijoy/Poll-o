@@ -7,14 +7,14 @@
     
     <h1 class='p-2'> Poll </h1>
     <hr>
-    <form method="POST" action="{{url_for('polls.pollform', qid)}}">
+    <form method="POST" action="{{url_for('polls.pollform',qid=qid)}}">
         <div class='mb-3'>
 		<h5>{{ question }}</h5>
         </div>
 
-	{% for option in options %}
+	{% for option_id,option in options %}
         <div class="form-check">
-		<input class="form-check-input" type="radio" name="option" id="opt{{loop.index}}" value="{{ option }}">
+		<input class="form-check-input" type="radio" name="option" id="opt{{loop.index}}" value="{{ option_id }}">
               <label class="form-check-label" for="opt{{loop.index}}">
 		      {{ option }}
             </label>

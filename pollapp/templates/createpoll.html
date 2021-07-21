@@ -12,10 +12,12 @@
     <h1 class='p-2'> Create Poll </h1>
     <hr>
     <form action="{{url_for('polls.createpoll')}}" method="POST">
+      
       <div class="mb-3">
         <label for="question" class="form-label">Question</label>
         <textarea class="form-control" name="question" id="question" rows="2"></textarea>
       </div>
+      
       <div class="row g-3 align-items-center">
         <div class="col-auto">
           <label for="opt1" class="col-form-label">1.</label>
@@ -24,6 +26,7 @@
           <input type="text" class="form-control" id="opt1" name="opt1" aria-describedby="option1">
         </div>
       </div>
+      
       <div class="row g-3 align-items-center">
         <div class="col-auto">
           <label for="opt2" class="col-form-label">2.</label>
@@ -32,6 +35,7 @@
           <input type="text" class="form-control" id="opt2" name="opt2" aria-describedby="option1">
         </div>
       </div>
+      
       <div class="row g-3 align-items-center">
         <div class="col-auto">
           <label for="opt3" class="col-form-label">3.</label>
@@ -40,6 +44,7 @@
           <input type="text" class="form-control" id="opt3" name="opt3" aria-describedby="option2">
         </div>
       </div>
+
       <div class="row g-3 align-items-center">
         <div class="col-auto">
           <label for="opt4" class="col-form-label">4.</label>
@@ -48,6 +53,7 @@
           <input type="text" class="form-control" id="opt4" name="opt4" aria-describedby="option3">
         </div>
       </div>
+
       <button type="submit" class="btn btn-primary">Create</button>
     </form>
     </div>    

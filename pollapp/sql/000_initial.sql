@@ -19,8 +19,9 @@ CREATE TABLE polldata (
 );
 
 CREATE TABLE polloption (
+	id INTEGER PRIMARY KEY,
 	polldata_id INTEGER NOT NULL,
-	options TEXT NOT NULL,
+	option TEXT NOT NULL,
 	votes INTEGER DEFAULT 0 NOT NULL,
 	FOREIGN KEY (polldata_id) references polldata(id) ON DELETE CASCADE
 );

@@ -16,6 +16,9 @@ def create_app():
           
     return render_template("home.html")
 
+  from . import auth
+  app.register_blueprint(auth.bp)
+
   from . import users
   app.register_blueprint(users.bp)
 

@@ -1,20 +1,22 @@
 {% extends 'base.html' %}
 
 {% block main %}
-<div class="row col-6 justify-content-center">
+<div class="row justify-content-center">
+  <div class="col-8">
+    <h1 class="display-2 text-center">Polls</h1>
+    <hr>
+  </div> 
 
-  <figure class="text-center">
-    <blockquote class="blockquote">
-      <p>Polls</p>
-    </blockquote>
-  </figure>
-  
-  {% for id, question in polls %}
-  <div class="card">
-    <div class="card-body">
-      <h5 class="card-title">{{ question }}</h5>
-    <a href="{{url_for('polls.pollform', id)}}" class="btn btn-primary">Vote</a>
+  {% for id, question in poll_list %}
+  <div class="row justify-content-center pt-2">
+  <div class="col-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{ question }}</h5>
+        <a href="{{url_for('polls.pollform', qid=id)}}" class="btn btn-primary">Vote</a>
+      </div>
     </div>
+  </div>
   </div>
   {% endfor %}
 

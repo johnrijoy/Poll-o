@@ -26,7 +26,7 @@
         
         <nav class="navbar navbar-dark bg-primary navbar-expand-lg">
             <div class="container-fluid">
-            <a class="navbar-brand" href="#!">Poll App</a>
+	    <a class="navbar-brand" href="{{url_for('home')}}">Poll App</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -34,17 +34,29 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">View Polls</a>
+            		    <a class="nav-link" href="{{url_for('polls.viewpoll')}}">View Polls</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{url_for('polls.createpoll')}}">Create Poll</a>
                 </li>
+
+                {% if g.user %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('users.signin')}}">Sign In</a>
+                    <a class="nav-link" href="{{url_for('users.dashboard')}}">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('users.signup')}}">Sign Up</a>
+                    <a class="nav-link" href="{{url_for('users.profile')}}">Hi, {{ g.user["name"] }}</a>
                 </li>
+
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('auth.signin')}}">Sign In</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('auth.signup')}}">Sign Up</a>
+                </li>
+                {% endif %}
+
             </ul>
             </div>
             </div>
