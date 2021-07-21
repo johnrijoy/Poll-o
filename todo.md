@@ -1,9 +1,7 @@
 ## Working on
--------------
 - polls.py: setting up viewpoll page.
 
 ## SQL
-------
 - manage user accounts, store username and passwords
 - mange polls and along with reference to the user who created it
 
@@ -20,7 +18,6 @@ update:
 5 - polls attempted by users
 
 ## HTML
-----
 - home page++: welcomes user
 - pollform: to vote a selected poll
 - viewpolls: to view available polls for every users and also poll results
@@ -31,8 +28,6 @@ update:
 - viewpoll: to check the results of a poll 
 
 ## Flask
------
-- home: home page
 - user authentication: to check if a user is signed in
 - user creation: to create and store user details on database
 - user login: to accept form, retrieve user account and authenticate the user

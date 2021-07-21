@@ -1,5 +1,4 @@
 # Pollo
------
 
 A simple poll app
 
