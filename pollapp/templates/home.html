@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block main %}    
+<!-- JUMBOTRON -->
+
+<div class="container">            
+    <div class="jumbotron">
+      <h1 class="display-3">Poll App</h1>
+            <p class="lead">This is a simple poll app under construction</p>
+        <hr class="my-2">
+        <p>Create your own poll now!</p>
+        <p class="lead">
+            <a class="btn btn-primary btn-lg" href="{{url_for('polls.pollform')}}" role="button">Vote Poll</a>
+            <a class="btn btn-primary btn-lg" href="{{url_for('polls.createpoll')}}" role="button">Create Poll</a>
+        </p>
+    </div>
+{% endblock %}    
+
+

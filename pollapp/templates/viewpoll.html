@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="row col-6 justify-content-center">
+
+  <figure class="text-center">
+    <blockquote class="blockquote">
+      <p>Polls</p>
+    </blockquote>
+  </figure>
+  
+  {% for id, question in polls %}
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">{{ question }}</h5>
+    <a href="{{url_for('polls.pollform', id)}}" class="btn btn-primary">Vote</a>
+    </div>
+  </div>
+  {% endfor %}
+
+</div>
+{% endblock %}
