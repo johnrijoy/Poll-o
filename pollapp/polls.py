@@ -4,6 +4,7 @@ from flask import render_template, request, redirect, url_for
 from flask import g
 
 from . import db
+from . import auth
 
 bp = Blueprint("polls", "polls", url_prefix="/polls")
 
@@ -16,7 +17,7 @@ def viewpoll():
     cur.execute("SELECT id, question FROM polldata")
     poll_list = cur.fetchall()
     
-    conn.close()
+    cur.close()
     return render_template("viewpoll.html", poll_list=poll_list )
 
 @bp.route("/pollform/<qid>", methods=["GET", "POST"])
@@ -33,8 +34,9 @@ def pollform(qid):
         # fetching options related to question qid
         cur.execute("SELECT id,option FROM polloption WHERE polldata_id=?", [qid])
         options = cur.fetchall()
-
-        conn.close()
+        
+        # close db cursor
+        cur.close()
         return render_template("pollform.html", question=question, options=options, qid=qid)
 
     if request.method == "POST":
@@ -46,8 +48,13 @@ def pollform(qid):
 
         option_id = request.form.get("option")
 
+        # if no option was selected or error in collecting option, redirect to viewpoll
         if option_id == None:
             return redirect(url_for('polls.viewpoll'))
+
+        # redirecting unauthenticated user to login
+        if g.user == None:
+            return redirect(url_for('auth.signin'))
 
         # fetch the number of votes for that option
         cur.execute("SELECT votes FROM polloption WHERE id=?", [option_id])
@@ -56,14 +63,15 @@ def pollform(qid):
         # update votes for the option in poll option
         cur.execute("UPDATE polloption SET votes=? WHERE id=?", [votes, option_id])
         # need to change after implementing authentication system
-        user_id = 1 #admin id
+        user_id = g.user["user_id"]
         cur.execute("INSERT INTO userpoll(poll_id, user_id) VALUES (?, ?)", [qid, user_id])
 
         conn.commit()
-        conn.close()
+        cur.close()
         return redirect(url_for('polls.viewpoll'))
 
 @bp.route("/createpoll", methods=["GET", "POST"])
+@auth.login_required
 def createpoll():
     # createpost will have two methods: 
     # GET - to send a form page
@@ -92,10 +100,10 @@ def createpoll():
         question_id = cur.lastrowid
         for opt in options:
             cur.execute("INSERT INTO polloption(option, polldata_id) VALUES (?, ?)", [opt, question_id])
-        cur.execute("SELECT id FROM userdata WHERE email='admin@admin.com'")
-        user_id = cur.fetchone()[0]
+        # collect user id from g which is loaded by session
+        user_id = g.user["user_id"] 
         cur.execute("INSERT INTO userpoll(poll_id, user_id) VALUES (?,?)", [question_id, user_id])
         
         conn.commit()
-        conn.close()
+        cur.close()
         return redirect(url_for("polls.viewpoll"), 302)

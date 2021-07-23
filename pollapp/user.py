@@ -6,7 +6,7 @@ from flask import g
 from . import db
 from . import auth
 
-bp = Blueprint("users", "users", url_prefix="/users")
+bp = Blueprint("user", "user", url_prefix="/user")
 
 @bp.route("/dashboard")
 @auth.login_required

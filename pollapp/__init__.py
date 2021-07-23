@@ -3,6 +3,7 @@ from flask import Flask, render_template
 
 def create_app():
   app = Flask("pollapp")
+  app.config["SECRET_KEY"]='have a good day'
   app.config.from_mapping(
           DATABASE=os.path.join(app.instance_path, 'pollapp.sqlite')
   )
@@ -19,8 +20,8 @@ def create_app():
   from . import auth
   app.register_blueprint(auth.bp)
 
-  from . import users
-  app.register_blueprint(users.bp)
+  from . import user
+  app.register_blueprint(user.bp)
 
   from . import polls
   app.register_blueprint(polls.bp)

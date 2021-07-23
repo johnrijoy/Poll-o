@@ -16,7 +16,7 @@ def login_required(view):
   @functools.wraps(view)
   def wrapped_view(**kwargs):
     if g.user is None:
-      return redirect(url_for("auth.login"))
+      return redirect(url_for("auth.signin"))
 
     return view(**kwargs)
 
@@ -36,12 +36,13 @@ def load_logged_in_user():
     conn = db.get_db()
     cur = conn.cursor()
     cur.execute("SELECT id,name,email FROM userdata WHERE id=? ", [user_id])
-    user_id, name, email = cur.fetch()[0]
+    user_id, name, email = cur.fetchone()
+    g.user = {}
     g.user['name'] = name
     g.user['user_id'] = user_id
     g.user['email'] = email
-    #closing db connection
-    conn.close()
+    #closing db cursor
+    cur.close()
 
 @bp.route("/signin", methods=["GET", "POST"])
 def signin():
@@ -61,28 +62,31 @@ def signin():
     cur.execute("SELECT id,name,pass,email FROM userdata WHERE email=?", [email])
     error = None # helps with authentication process 
     # check if the query is empty - user not registered
-    if cur.fetchone():
-      userid, name, user_password, email = cur.fetchone()[0]
+    userdata = cur.fetchone()
+    if userdata:
+      userid, name, user_password, email = userdata
     else:
       # return message: username not found
       error = "Incorrect email"
-      pass
+      print(error)
     
     # continues if user is already registered
     if error is None:
       # check password
-      if password == password:
+      if password == user_password:
         session.clear()
         session["user_id"] = userid
-
-        conn.close()
+        
+        # close db cursor
+        cur.close()
         return redirect(url_for("user.dashboard"))
       else:
         # return message password incorrect
         error = "Incorrect password"
-    
-    conn.close()
-    return render_template(url_for("auth.signin"))
+        print(error)
+    # close db cursor
+    cur.close()
+    return redirect(url_for("auth.signin"))
 
 @bp.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -99,7 +103,8 @@ def signup():
     # check if user is already present
     cur.execute("SELECT id FROM userdata WHERE email=?", [email])
     error = None
-    if cur.fetchone():
+    user_exist = cur.fetchone()
+    if user_exist:
       error = "User already registered"
     else:
       pass
@@ -107,7 +112,7 @@ def signup():
     # continues with registration if user is not registered
     if error is None:
       # the user is new, update database with the new details
-      cur.execute("INSERT INTO userdata(name,pass,email) VALUES (?,?,?)", [name, email, password])
+      cur.execute("INSERT INTO userdata(name,email,pass) VALUES (?,?,?)", [name, email, password])
       user_id = cur.lastrowid
       conn.commit()
       
@@ -116,9 +121,10 @@ def signup():
       session["user_id"] = user_id
 
       # close db connection
-      conn.close()
-      return redirect(url_for("users.dashboard"))
-
+      cur.close()
+      return redirect(url_for("user.dashboard"))
+    
+    cur.close()
 
   return render_template("signup.html")
 
