@@ -38,3 +38,20 @@ def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
 
+def get_user_by_email(email):
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("SELECT id, name, email FROM userdata WHERE email=?",[email])
+    userdata = cur.fetchone()
+
+    cur.close()
+    if userdata:
+        user_id, name, email = userdata
+        userdata = {}
+        userdata['user_id'] = user_id
+        userdata['name'] = name
+        userdata['email'] = email
+    else:
+        print("user does not exist")
+    return userdata

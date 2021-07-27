@@ -1,7 +1,7 @@
 # to manage polls
 from flask import Blueprint
 from flask import render_template, request, redirect, url_for
-from flask import g
+from flask import g, jsonify
 
 from . import db
 from . import auth
@@ -18,7 +18,11 @@ def viewpoll():
     poll_list = cur.fetchall()
     
     cur.close()
-    return render_template("viewpoll.html", poll_list=poll_list )
+
+    if (request.accept_mimetypes.best == 'application/json'):
+        return jsonify(dict(polls = [dict(id=id, question=question) for id, question in poll_list])) 
+    else:
+        return render_template("viewpoll.html", poll_list=poll_list )
 
 @bp.route("/pollform/<qid>", methods=["GET", "POST"])
 def pollform(qid):

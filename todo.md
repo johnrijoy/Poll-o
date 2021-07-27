@@ -14,7 +14,7 @@ update:
 1 - store userdetails and authentication
 2 - poll details and questions
 3 - poll options and the votes
-4 - polls created by users
+4 - polls created by users -- not needed, can be stored in 2
 5 - polls attempted by users
 
 ## HTML

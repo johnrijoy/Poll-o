@@ -1,7 +1,6 @@
-DROP TABLE IF EXISTS polldata;
-DROP TABLE IF EXISTS polloption;
-DROP TABLE IF EXISTS userpoll;
 DROP TABLE IF EXISTS userattempt;
+DROP TABLE IF EXISTS polloption;
+DROP TABLE IF EXISTS polldata;
 DROP TABLE IF EXISTS userdata;
 
 CREATE TABLE userdata (
@@ -15,7 +14,9 @@ INSERT INTO userdata(name, pass, email) VALUES ('admin', 'admin', 'admin@admin.c
 CREATE TABLE polldata (
 	id INTEGER PRIMARY KEY,
 	question TEXT NOT NULL,
-	closedate DATE
+  user_id INTEGER NOT NULL,
+	closedate DATE,
+	FOREIGN KEY (user_id) references userdata(id) ON DELETE CASCADE
 );
 
 CREATE TABLE polloption (
@@ -26,16 +27,11 @@ CREATE TABLE polloption (
 	FOREIGN KEY (polldata_id) references polldata(id) ON DELETE CASCADE
 );
 
-CREATE TABLE userpoll (
-	poll_id INTEGER,
-	user_id INTEGER,
-	FOREIGN KEY (poll_id) references polldata(id) ON DELETE CASCADE,
-	FOREIGN KEY (user_id) references userdata(id) ON DELETE CASCADE
-);
-
 CREATE TABLE userattempt (
 	poll_id INTEGER,
+  option_id INTEGER, 
 	user_id INTEGER,
 	FOREIGN KEY (poll_id) references polldata(id) ON DELETE CASCADE,
+	FOREIGN KEY (option_id) references polloption(id) ON DELETE CASCADE,
 	FOREIGN KEY (user_id) references userdata(id) ON DELETE CASCADE
 );
