@@ -31,13 +31,14 @@ def view_poll():
         return jsonify({"msg": "bad request"}), 400
 
 @bp.route("/getpoll", methods=["GET"], endpoint="get_poll")
-@jwt_required
+@jwt_required()
 def get_poll():
     # API request will also contain question id
     # have to return pollid, question, polloptions, optionid, votes
 
     # get poll id and user id from qpi request
-    poll_id = request.json.get("poll_id")
+    print(request.args.get("poll_id"))
+    poll_id = request.args.get("poll_id")
     email = get_jwt_identity()
     userdata = db.get_user_by_email(email)
     user_id = userdata["user_id"]
@@ -69,8 +70,6 @@ def get_poll():
     # pack all data into a dictionary
     ret = {}
     ret["polldata"] = dict(poll_id=poll_id, question=question, attempted=attempted)
-    for option_id, option in options:
-        ret
     ret["polloptions"] = {option_id: option for option_id,option,votes in options}
     ret["pollvotes"] = {option_id: votes for option_id,option,votes in options}
 
@@ -131,6 +130,8 @@ def create_poll():
     print(request.data)
     question = request.json.get("question")
     options = request.json.get("options")
+    options = options.strip('][').split(', ')
+    print(options)
 
     #get user_id
     email = get_jwt_identity()
@@ -150,6 +151,7 @@ def create_poll():
 
     #add the options
     for opt in options:
+        print(opt)
         cur.execute("INSERT INTO polloption(option, polldata_id) VALUES (?, ?)", [opt, question_id])
     
     

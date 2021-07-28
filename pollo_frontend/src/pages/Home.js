@@ -15,7 +15,11 @@ const Home = () => {
     <Layout>
 
        { (viewPolls) ? (
+          <>
+           <h1 className="display-1 text-center">Poll'O</h1> 
+           <hr/>
            <AllPolls handleClick={handleClick}/>
+          </>
        ) : (
            <WelcomeMessage handleClick={handleClick} />
        )

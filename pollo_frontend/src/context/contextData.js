@@ -5,6 +5,7 @@ const getState = ({ getStore, getActions, setStore }) => {
     store:{
       message: null,
       token: null,
+      isAuthenticated: false,
       test: 'store working'
     },
     actions:{
@@ -16,7 +17,10 @@ const getState = ({ getStore, getActions, setStore }) => {
       syncTokenFromSessionStorage:()=>{
         const token = sessionStorage.getItem("token");
         console.log("refreshin, syncing tokens")
-        if (token && token != "" && token != undefined ) setStore({token: token});
+        if (token && token != "" && token != undefined ) setStore({
+          token: token,
+          "isAuthenticated": true
+        });
       },
 
       login: async (email, password)=>{
@@ -45,6 +49,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.log("Backend data:", data);
           sessionStorage.setItem("token", data.access_token);
           setStore({ "token": data.access_token });
+          setStore({"isAuthenticated" :true });
           return true;
         }
         catch(error){
@@ -89,6 +94,7 @@ const getState = ({ getStore, getActions, setStore }) => {
       logout: ()=>{
         sessionStorage.removeItem("token");
         setStore({ token: null });
+        setStore({isAuthenticated : false });
         console.log("tokens removed, logged out")
       },
       
@@ -98,7 +104,7 @@ const getState = ({ getStore, getActions, setStore }) => {
         console.log(store);        
         const apidata = {
           'question':polldata.question,
-          'options':JSON.stringify(polldata.options)
+          'options':polldata.options
         };
         const opts={
           method: "POST",
