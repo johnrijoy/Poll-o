@@ -9,7 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 import Navigation from './components/Navigation.js';
-import {Home, Dashboard} from './pages';
+import {Home, Dashboard, Login, Pollpage} from './pages';
 import injectContext from './context/appContext';
 
 function App() {
@@ -28,7 +28,15 @@ function App() {
           <Dashboard />
         </Route>
 
-      </Switch>
+        <Route exact path="/login">
+          <Login />
+        </Route>
+
+        <Route exact path="/poll/:poll_id">
+          <Pollpage />
+        </Route>
+
+    </Switch>
 
     </Router>
   );

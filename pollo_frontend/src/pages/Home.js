@@ -12,12 +12,10 @@ const Home = () => {
   const handleClick = ()=>(setViewPolls(!viewPolls))
  
   return (
-    <Layout>
+    <Layout heading="Poll'O">
 
        { (viewPolls) ? (
           <>
-           <h1 className="display-1 text-center">Poll'O</h1> 
-           <hr/>
            <AllPolls handleClick={handleClick}/>
           </>
        ) : (

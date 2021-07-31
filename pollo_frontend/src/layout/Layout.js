@@ -5,7 +5,9 @@ import {
 
 const Layout = (props) => ( 
     <>
-    <Container>
+    <Container className='h-100'>
+      <h1 className="display-1 text-center">{props.heading}</h1> 
+      <hr/>
     {props.children}
     </Container>
     </>

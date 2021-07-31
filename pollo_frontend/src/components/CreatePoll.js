@@ -1,11 +1,12 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import {
   Form,
   ButtonGroup,
   InputGroup,
   Button
 } from 'react-bootstrap';
-import { Context } from '../context/appContext.js';
+
+import { Context } from '../context/appContext';
 
 // functional component to add and remove options
 const OptionGroup = (props) => {

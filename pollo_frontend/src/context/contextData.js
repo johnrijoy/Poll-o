@@ -6,6 +6,7 @@ const getState = ({ getStore, getActions, setStore }) => {
       message: null,
       token: null,
       isAuthenticated: false,
+      user: null,
       test: 'store working'
     },
     actions:{
@@ -17,10 +18,18 @@ const getState = ({ getStore, getActions, setStore }) => {
       syncTokenFromSessionStorage:()=>{
         const token = sessionStorage.getItem("token");
         console.log("refreshin, syncing tokens")
-        if (token && token != "" && token != undefined ) setStore({
-          token: token,
-          "isAuthenticated": true
-        });
+        if (token && token !== "" && token !== undefined ) 
+        {
+          setStore({token: token });
+          const action = getActions();
+          action.getuser()
+        }else{
+          setStore({
+            token: null, 
+            isAuthenticated: false,
+            user: null
+          });
+        }
       },
 
       login: async (email, password)=>{
@@ -49,8 +58,9 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.log("Backend data:", data);
           sessionStorage.setItem("token", data.access_token);
           setStore({ "token": data.access_token });
-          setStore({"isAuthenticated" :true });
-          return true;
+          const action = getActions();
+          action.getuser()
+          return true; 
         }
         catch(error){
           console.error("Error 2", error);
@@ -94,8 +104,35 @@ const getState = ({ getStore, getActions, setStore }) => {
       logout: ()=>{
         sessionStorage.removeItem("token");
         setStore({ token: null });
-        setStore({isAuthenticated : false });
+        setStore({isAuthenticated : false, user: null });
         console.log("tokens removed, logged out")
+      },
+
+      getuser: async ()=>{
+        console.log('getting user details');
+        const store = getStore()
+        const opts={
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer "+ store.token 
+          }
+        }
+      try {
+      const resp = await axios(process.env.REACT_APP_API_SERVER+"/api/auth/userdata", opts)
+         
+      if (resp.status === 200){
+          console.log("setting store.user",resp.data);
+          setStore({user: resp.data});
+          setStore({isAuthenticated: true });
+          return true;
+      }
+      }
+      
+      catch(error){
+       console.error(error.response.status, error);
+       if (error.response.status === 401) getActions().logout();
+      }      
+
       },
       
       create_post: async (polldata)=>{

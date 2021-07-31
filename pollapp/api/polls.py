@@ -76,7 +76,7 @@ def get_poll():
     return jsonify(ret)
 
 @bp.route("/votepoll", methods=["POST"], endpoint="vote_poll")
-@jwt_required
+@jwt_required()
 def vote_poll():
     # the form will be submitted in post with an option radio marked
     # update the tables polloption, userattempt 
@@ -96,6 +96,10 @@ def vote_poll():
     userdata = db.get_user_by_email(email)
     user_id = userdata["user_id"]
 
+    # connecting to database
+    conn = db.get_db()
+    cur = conn.cursor()
+
     # check userattempt table, if poll attempted return invalid status code
     cur.execute("SELECT * FROM userattempt WHERE user_id=? AND poll_id=?", [user_id, poll_id])
     attempted = cur.fetchone()
@@ -110,7 +114,7 @@ def vote_poll():
     cur.execute("UPDATE polloption SET votes=? WHERE id=?", [votes, option_id])
    
     # update the userattempt table with the details of authenticated user 
-    cur.execute("INSERT INTO userpoll(poll_id, user_id, option_id) VALUES (?, ?)", [poll_id, user_id, option_id])
+    cur.execute("INSERT INTO userattempt(poll_id, user_id, option_id) VALUES (?, ?, ?)", [poll_id, user_id, option_id])
 
     conn.commit()
     cur.close()
@@ -130,7 +134,8 @@ def create_poll():
     print(request.data)
     question = request.json.get("question")
     options = request.json.get("options")
-    options = options.strip('][').split(', ')
+    for opt in options:
+        print(opt)
     print(options)
 
     #get user_id
@@ -160,3 +165,63 @@ def create_poll():
 
     return jsonify({"msg":"poll created successfully"}), 200
 
+
+@bp.route("/attemptedpoll", endpoint="attempted_poll")
+@jwt_required()
+def attempted_poll():
+    # to view all the attempted polls
+    # authentication required
+
+    # get user_id
+    email = get_jwt_identity()
+    userdata = db.get_user_by_email(email)
+    user_id = userdata["user_id"]
+
+    # connecting to database
+    conn = db.get_db()
+    cur = conn.cursor()
+
+    cur.execute("""SELECT polldata.id, polldata.question, userdata.name, userdata.email FROM polldata 
+                JOIN userdata ON polldata.user_id = userdata.id
+                JOIN userattempt ON polldata.id = userattempt.poll_id
+                WHERE userattempt.user_id=?
+            """, [user_id])
+    poll_list = cur.fetchall()
+    
+    cur.close()
+
+    if (request.accept_mimetypes.best == 'application/json'):
+        ret = dict(polls = [dict(id=id, question=question, name=name, email=email) for id, question, name, email in poll_list])
+        return jsonify(ret), 200 
+    else:
+        return jsonify({"msg": "bad request"}), 400
+
+
+@bp.route("/mypoll", endpoint="my_poll")
+@jwt_required()
+def my_poll():
+    # to view all the attempted polls
+    # authentication required
+
+    # get user_id
+    email = get_jwt_identity()
+    userdata = db.get_user_by_email(email)
+    user_id = userdata["user_id"]
+
+    # connecting to database
+    conn = db.get_db()
+    cur = conn.cursor()
+
+    cur.execute("""SELECT polldata.id, polldata.question, userdata.name, userdata.email FROM polldata 
+                JOIN userdata ON polldata.user_id = userdata.id
+                WHERE polldata.user_id=?
+            """, [user_id])
+    poll_list = cur.fetchall()
+    
+    cur.close()
+
+    if (request.accept_mimetypes.best == 'application/json'):
+        ret = dict(polls = [dict(id=id, question=question, name=name, email=email) for id, question, name, email in poll_list])
+        return jsonify(ret), 200 
+    else:
+        return jsonify({"msg": "bad request"}), 400

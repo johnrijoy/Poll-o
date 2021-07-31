@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useHistory } from 'react-router-dom';
 import {
+  Alert,
   Form,
   Button
 } from 'react-bootstrap';
@@ -8,11 +9,12 @@ import {
 import { Context } from '../context/appContext';
 
 const RegisterForm = (props)=>{
+  const [alerts, setAlerts] = useState(null);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
 
-  const { store, actions} = useContext(Context);
+  const actions = useContext(Context).actions;
   const history = useHistory();
 
   const handleSubmit = (e)=> {
@@ -28,7 +30,10 @@ const RegisterForm = (props)=>{
         history.push('/dashboard');
         console.log("You have beeen logged in");
       }
-      ).catch(()=>(console.log("Error 3")));
+      ).catch((error)=>{
+        console.log("Error 3", error.response.data.msg);
+        setAlerts(error.response.data.msg);
+      });
   };
 
   return (
@@ -54,9 +59,11 @@ const RegisterForm = (props)=>{
       />
     </Form.Group>
 
-    <Form.Group className="mb-3" controlId="formBasicCheckbox">
-      <Form.Check type="checkbox" label="Check me out" />
-    </Form.Group>
+    { (alerts) &&
+    <Alert variant="danger">
+      {alerts}
+    </Alert>
+    }
 
     <Button variant="primary" type="submit" 
         onClick = {(e)=> handleSubmit(e)}>

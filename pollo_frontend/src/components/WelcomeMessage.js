@@ -1,17 +1,25 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Button 
+} from 'react-bootstrap';
 
 const WelcomeMessage = (props) => {
   return (
-    <>
-    <p>This is the welcome message for Home page</p>
+    <Row className="align-items-center text-center" style={{height:'60vh'}}>
+    <Col>
+    <h1>Welcome to Poll'O</h1>
+    <br/><br/>
     <Button
-      variant = 'primary'
+      size="lg"
+      variant = 'outline-primary'
       onClick = {props.handleClick}
     >
       View Polls
     </Button>
-    </>
+    </Col>
+    </Row>
   );
 };
 

@@ -19,7 +19,7 @@ const injectContext = PassedComponent => {
 
     useEffect(()=>{
       state.actions.syncTokenFromSessionStorage();
-    },[]);
+    },[state.actions]);
 
     return (
       <Context.Provider value={state}>
