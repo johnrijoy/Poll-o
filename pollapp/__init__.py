@@ -31,14 +31,14 @@ def create_app():
     return render_template("home.html")
 
   # Registering Non-API Blueprints
-  #from . import auth
-  #app.register_blueprint(auth.bp)
+  from . import auth
+  app.register_blueprint(auth.bp)
 
-  #from . import user
-  #app.register_blueprint(user.bp)
+  from . import user
+  app.register_blueprint(user.bp)
 
-  #from . import polls
-  #app.register_blueprint(polls.bp)
+  from . import polls
+  app.register_blueprint(polls.bp)
 
   # Registering API Blueprints
   from .api import auth as api_auth
