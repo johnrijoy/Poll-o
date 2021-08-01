@@ -1,1 +1,1 @@
-web: gunicorn app:pollapp
+web: gunicorn pollapp:create_app
